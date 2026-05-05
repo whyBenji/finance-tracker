@@ -1,0 +1,27 @@
+from datetime import UTC, date, datetime
+from decimal import Decimal
+
+from sqlalchemy import Boolean, Date, DateTime, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db import Base
+
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[Date] = mapped_column(Date, index=True)
+    description: Mapped[str] = mapped_column(String(255))
+    category: Mapped[str] = mapped_column(String(100), index=True)
+    amount: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    is_subscription: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
